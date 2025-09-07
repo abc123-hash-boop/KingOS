@@ -1,2 +1,116 @@
 # KingOS
 My own Linux Distro, a ubuntu-based distro. Still working on it.
+## How to get rootfs
+Choose a version. Ubuntu 24.04 LTS is 
+```bash
+#get 24.04 LTS
+wget https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64.squashfs
+#get 25.04
+https://cloud-images.ubuntu.com/releases/plucky/release/ubuntu-25.04-server-cloudimg-amd64.squashfs
+```
+Then unpack.
+```bash
+unsquashfs -d rootfs ubuntu-*-server-cloudimg-amd64.squashfs
+```
+Make sure you can see the ``` rootfs ``` folder.
+### Why choose cloud image?
+Because it is a full ubuntu base system, you can skip many steps, just like install basic tools(like curl, wget), and faster than ``` debootstrap ``` .
+## Branding
+Make your own branding by change ``` rootfs/etc/os-release ``` and ``` rootfs/etc/lsb-release ``` .
+Change by your self.
+Note:
+Backup the original file. If ``` apt update ``` can not be use, recover the file.
+Change ```rootfs/etc/issue ``` and ``` rootfs/etc/issue.net ```
+If you want to custom hostname, change ``` rootfs/etc/hostname ``` .
+## Install/Remove feature
+Lets update software.
+Note: You don't need to modify source.list, because it is complete.
+```chroot
+apt update
+apt upgrade -y
+```
+So, as a desktop system, you can remove ``` cloud-init ``` , because it is useless.
+```bash
+apt purge -y cloud-init
+```
+Then, install networking
+```bash
+apt install -y network-manager
+```
+Install Desktop, kde-plasma is tiny and easy to use. This might take a while, wait a minute.
+```bash
+apt install -y kde-plasma-desktop
+```
+Install casper and kernel
+```
+OLDER_KERNEL_ABI="6.14.0-27-generic"
+apt-get install -y --allow-downgrades \
+    casper \
+    discover \
+    laptop-detect \
+    os-prober \
+    keyutils \
+    thermald \
+    linux-image-${OLDER_KERNEL_ABI} \
+    linux-headers-${OLDER_KERNEL_ABI} \
+    linux-modules-extra-${OLDER_KERNEL_ABI} \
+    --no-install-recommends
+```
+Remove ubuntu services
+```bash
+rm /etc/update-manager/ -rf
+rm /etc/update-motd.d/ -rf
+rm /etc/apt/apt.conf.d/20apt-esm-hook.conf -rf
+```
+config locales
+```bash
+dpkg-reconfigure locales
+```
+Select:
+en_US.UTF-8 UTF-8
+zh_CN.UTF-8 UTF-8
+
+Default locale for the system environment choose en-US if you want english, or you can choose chinese
+If you want chinese, don't forget run ``` apt install language-pack-zh-hans ``` .
+Install system installer
+```bash
+apt install -y ubiquity
+```
+Display Driver for Intel UHD and AMD Vega
+```bash
+sudo apt update
+
+# Intel GPU Driver + Xorg
+sudo apt install -y xserver-xorg-video-intel
+
+# Mesa （OpenGL、DRI）
+sudo apt install -y mesa-utils libgl1-mesa-dri libglu1-mesa
+
+# Vulkan （Intel）
+sudo apt install -y mesa-vulkan-drivers vulkan-tools
+
+# OpenGL / EGL
+sudo apt install -y libgl1-mesa-dev libegl1-mesa-dev libgles2-mesa-dev
+
+# Wayland 
+sudo apt install -y libwayland-client0 libwayland-server0 libwayland-egl1-mesa
+
+# AMD （OpenGL + DRI）
+sudo apt install -y mesa-utils libgl1-mesa-dri libglu1-mesa
+
+# Vulkan （AMD GPU）
+sudo apt install -y mesa-vulkan-drivers vulkan-tools
+```
+Clean up
+```bash
+rm -rf /tmp/* ~/.bash_history
+rm -rf /bin.usr-is-merged
+rm -rf /lib.usr-is-merged
+rm -rf /sbin.usr-is-merged
+apt clean -y
+rm -rf /var/cache/apt/archives/*
+rm -rf /var/log/*
+truncate -s 0 /etc/machine-id
+truncate -s 0 /var/lib/dbus/machine-id
+```
+### I will finish in tomorrow
