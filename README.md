@@ -22,6 +22,10 @@ Note:
 Backup the original file. If ``` apt update ``` can not be use, recover the file.
 Change ```rootfs/etc/issue ``` and ``` rootfs/etc/issue.net ```
 If you want to custom hostname, change ``` rootfs/etc/hostname ``` .
+## Chroot
+```bash
+bash chroot.sh
+```
 ## Install/Remove feature
 Lets update software.
 Note: You don't need to modify source.list, because it is complete.
@@ -101,7 +105,69 @@ sudo apt install -y mesa-utils libgl1-mesa-dri libglu1-mesa
 # Vulkan （AMD GPU）
 sudo apt install -y mesa-vulkan-drivers vulkan-tools
 ```
-Clean up
+Remove plymouth, because it is not useful and not stable.
+```bash
+apt purge plymouth
+```
+Web browser
+You can install Chrome or firefox, Chrome is the best choice, because no ads.
+I choose chrome.
+```bash
+curl -fsSL https://dl.google.com/linux/linux_signing_key.pub \
+    | gpg --dearmor -o /etc/apt/keyrings/google-linux.gpg
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/google-linux.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+    > /etc/apt/sources.list.d/google-chrome.list
+apt update
+apt install -y google-chrome-stable
+```
+Some gaming...
+If you want gaming, you can pre-install libraries, like ``` jdk ``` , Minecraft is my favorite game, if you play minecraft, ``` jdk ``` is useful.
+```bash
+apt install openjdk-21-jdk
+```
+Remove report
+```bash
+sudo apt purge ubuntu-report apport whoopsie
+sudo apt autoremove -y --purge
+```
+For developers
+Let's install build tools first
+```bash
+sudo apt install -y build-essential
+```
+Then, let's install vscode.
+```bash
+# Download and install Microsoft GPG Key
+curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg
+
+# Add VS Code source
+echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
+    > /etc/apt/sources.list.d/vscode.list
+
+# Update and install VS Code
+apt update
+apt install -y code
+```
+## Configure Live user
+```bash
+cat << EOF > /etc/casper.conf
+# This file should go in /etc/casper.conf
+# Supported variables are:
+# USERNAME, USERFULLNAME, HOST, BUILD_SYSTEM, FLAVOUR
+
+export USERNAME="live"
+export USERFULLNAME="Live session user"
+export HOST="KingOS"
+export BUILD_SYSTEM="Ubuntu"
+
+# USERNAME and HOSTNAME as specified above won't be honoured and will be set to
+# flavour string acquired at boot time, unless you set FLAVOUR to any
+# non-empty string.
+
+export FLAVOUR="KingOS"
+EOF
+```
+## Clean up
 ```bash
 rm -rf /tmp/* ~/.bash_history
 rm -rf /bin.usr-is-merged
@@ -113,4 +179,4 @@ rm -rf /var/log/*
 truncate -s 0 /etc/machine-id
 truncate -s 0 /var/lib/dbus/machine-id
 ```
-### I will finish in tomorrow
+
