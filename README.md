@@ -179,4 +179,26 @@ rm -rf /var/log/*
 truncate -s 0 /etc/machine-id
 truncate -s 0 /var/lib/dbus/machine-id
 ```
-
+## Quit chroot
+```bash
+exit
+```
+## Pack iso
+Exporting
+```bash
+mkdir -p image/{casper,isolinux,.disk}
+sudo cp rootfs/boot/vmlinuz-**-**-generic image/casper/vmlinuz
+sudo cp rootfs/boot/initrd.img-**-**-generic image/casper/initrd
+sudo chroot rootfs dpkg-query -W --showformat='${Package} ${Version}\n' | sudo tee image/casper/filesystem.manifest >/dev/null 2>&1
+    sudo mksquashfs rootfs image/casper/filesystem.squashfs \
+        -noappend -no-duplicates -no-recovery \
+        -wildcards -b 1M \
+        -comp zstd -Xcompression-level 19 \
+        -e "var/cache/apt/archives/*" \
+        -e "root/*" \
+        -e "root/.*" \
+        -e "tmp/*" \
+        -e "tmp/.*" \
+        -e "swapfile"
+```
+# If you want to build with me, subscribe for updates.
