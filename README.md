@@ -201,4 +201,5 @@ sudo chroot rootfs dpkg-query -W --showformat='${Package} ${Version}\n' | sudo t
         -e "tmp/.*" \
         -e "swapfile"
 ```
-# If you want to build with me, subscribe for updates.
+# Replace these files in ubuntu installer iso, then, it is done
+## News: KingOS 1.0 LTS is now built, will test in today or tomorrow, then release
