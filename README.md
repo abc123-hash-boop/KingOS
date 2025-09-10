@@ -37,9 +37,31 @@ So, as a desktop system, you can remove ``` cloud-init ``` , because it is usele
 ```bash
 apt purge -y cloud-init
 ```
-Then, install networking
+Then, install networking, with dhcp.
 ```bash
 apt install -y network-manager
+vim /etc/netplan/01-network.yaml
+```
+Then, write down this in vim:
+```yaml
+network:
+  version: 2
+  renderer: NetworkManager
+  ethernets:
+    all-interfaces:
+      dhcp4: true
+      dhcp6: false
+```
+Then, apply
+```bash
+chown root:root /etc/netplan/01-network.yaml
+chmod 600 /etc/netplan/01-network.yaml
+netplan generate
+```
+You don't need wait-online, disable and mask it, plasma will do that.
+```bash
+sudo systemctl disable NetworkManager-wait-online.service
+sudo systemctl mask NetworkManager-wait-online.service
 ```
 Install Desktop, kde-plasma is tiny and easy to use. This might take a while, wait a minute.
 ```bash
