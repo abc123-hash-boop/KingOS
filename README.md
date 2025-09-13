@@ -191,6 +191,8 @@ export BUILD_SYSTEM="Ubuntu"
 
 export FLAVOUR="KingOS"
 EOF
+# Update
+update-initramfs -u -k all
 ```
 ## Clean up
 ```bash
