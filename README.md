@@ -50,7 +50,7 @@ network:
   ethernets:
     all-interfaces:
       dhcp4: true
-      dhcp6: false
+      dhcp6: true
 ```
 Then, apply
 ```bash
@@ -62,6 +62,9 @@ You don't need wait-online, disable and mask it, plasma will do that.
 ```bash
 sudo systemctl disable NetworkManager-wait-online.service
 sudo systemctl mask NetworkManager-wait-online.service
+ln -sf /dev/null /etc/systemd/system/systemd-networkd-wait-online.service
+rm -f /etc/systemd/system/network-online.target.wants/systemd-networkd-wait-online.service
+rm -f /etc/systemd/system/multi-user.target.wants/systemd-networkd.service
 ```
 Install Desktop, kde-plasma is tiny and easy to use. This might take a while, wait a minute.
 ```bash
