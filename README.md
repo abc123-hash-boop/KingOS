@@ -5,7 +5,7 @@ Choose a version. Ubuntu 24.04 LTS is
 ```bash
 #get 24.04 LTS
 wget https://cloud-images.ubuntu.com/releases/noble/release/ubuntu-24.04-server-cloudimg-amd64.squashfs
-#get 25.04
+#get 25.10
 https://cloud-images.ubuntu.com/releases/plucky/release/ubuntu-25.04-server-cloudimg-amd64.squashfs
 ```
 Then unpack.
@@ -148,7 +148,7 @@ apt install -y google-chrome-stable
 Some gaming...
 If you want gaming, you can pre-install libraries, like ``` jdk ``` , Minecraft is my favorite game, if you play minecraft, ``` jdk ``` is useful.
 ```bash
-apt install openjdk-21-jdk
+apt install openjdk-25-jdk
 ```
 Remove report
 ```bash
